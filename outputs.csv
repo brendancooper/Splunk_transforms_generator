@@ -1,0 +1,10 @@
+sourcetype,action,name,format,regex
+cpu,reroute,os_metrics,"",
+df,mask,session,$1SessionId=########$2,"(?m)^(.*)SessionId=\w+(\w{4}[&""].*)$"
+df,reroute,prod_applogs,"",
+interfaces,reroute,prod_applogs,"",
+iostat,reroute,prod_applogs,"",
+linux_secure,reroute,prod_applogs,"",
+netstat,reroute,test_applogs,"",
+vmstat,reroute,prod_applogs,"",
+httpevent,drop,,"",
