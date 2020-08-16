@@ -6,6 +6,20 @@ import sys
 
 from pathlib import Path
 
+"""
+Is there transforms that already does that functionality?
+    If it exists:
+        create a new props that points to that transforms
+    else:
+        create a new transforms based on the 'action' value:
+            reroute = DEST_KEY = index, name = reroute_to_{{name}}
+            drop = drop the event
+            mask = DEST_KEY = _raw, name = mask_{{sourcetype}}_{{name}}
+        create a new props that points to the new transform
+
+
+"""
+
 
 def handle_row(row):
     if row['action'] == "drop":
@@ -24,13 +38,15 @@ def handle_row(row):
             transforms[transform_name] = create_mask_config(row)
 
     create_props(row['sourcetype'], transform_name)
-    
+
+
 def create_reroute_config(row):
     config = {}
     config['DEST_KEY'] = "_MetaData:Index"
     config['REGEX'] = "^.*"
     config['FORMAT'] = row['name']
     return config
+
 
 def create_mask_config(row):
     config = {}
@@ -39,13 +55,15 @@ def create_mask_config(row):
     config['FORMAT'] = row['format']
     return config
 
+
 def create_drop_config(row):
     config = {}
     config['DEST_KEY'] = "queue"
     config['REGEX'] = "^.*"
     config['FORMAT'] = "nullQueue"
     return config
-    
+
+
 def create_props(sourcetype, transform_name):
     attr_name = "TRANSFORMS-" + transform_name
     if sourcetype not in props:
@@ -54,8 +72,10 @@ def create_props(sourcetype, transform_name):
     props[sourcetype][attr_name] = transform_name
 
 
-parser = argparse.ArgumentParser(description='Bulk create Splunk Props/Transforms for routing,masking and dropping events using a simple csv format')
-parser.add_argument('--input', required=True, help='CSV File with following columns "sourcetype,action,name,format,regex"')
+parser = argparse.ArgumentParser(
+    description='Bulk create Splunk Props/Transforms for routing,masking and dropping events using a simple csv format')
+parser.add_argument('--input', required=True,
+                    help='CSV File with following columns "sourcetype,action,name,format,regex"')
 
 props = configparser.ConfigParser()
 props.optionxform = str
@@ -76,19 +96,3 @@ with open('props.conf', 'w') as configfile:
 
 with open('transforms.conf', 'w') as configfile:
     transforms.write(configfile)
-
-
-"""
-Is there transforms that already does that functionality?
-    If it exists:
-        create a new props that points to that transforms
-    else:
-        create a new transforms based on the 'action' value:
-            reroute = DEST_KEY = index, name = reroute_to_{{name}}
-            drop = drop the event
-            mask = DEST_KEY = _raw, name = mask_{{sourcetype}}_{{name}}
-        create a new props that points to the new transform
-
-
-
-"""
