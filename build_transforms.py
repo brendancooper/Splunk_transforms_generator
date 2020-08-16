@@ -55,7 +55,7 @@ def create_props(sourcetype, transform_name):
 
 
 parser = argparse.ArgumentParser(description='Bulk create Splunk Props/Transforms for routing,masking and dropping events using a simple csv format')
-parser.add_argument('--input', required=True)
+parser.add_argument('--input', required=True, help='CSV File with following columns "sourcetype,action,name,format,regex"')
 
 props = configparser.ConfigParser()
 props.optionxform = str

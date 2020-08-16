@@ -1,0 +1,13 @@
+Bulk create Splunk Props/Transforms for routing,masking and dropping events using a simple csv format
+
+Usage: build_transforms.py --input [csvfile.csv]
+
+Creates props.conf and transforms.conf files using a CSV file with the following heading "sourcetype,action,name,format,regex"
+
+Sourcetype is the sourcetype you want to manipulate
+
+action is the type of config to create. Valid actions are reroute, mask and dropping
+
+format is the Splunk FORMAT value - This field is only used for mask actions.
+
+regex is the Splunk REGEX field - Used to extract values from the _raw event
